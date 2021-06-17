@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+
+<link rel="stylesheet" href="css/myStyle.css">
+
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+
+        <button class="btn btn-success" type="button" onclick="mostrarModalUsuario(1)"><i class="fas fa-plus"></i> Nuevo material</button>
+
+    </div>
+</div>
+
+
+<!-- table principal -->
+<div class="card shadow mb-4 cardDetalle hidden">
+    <div class="card-body cardPadding">
+        <div class="tableFixHead" id="tableUsuarios">
+            <!-- aqui va la tabla -->
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalNuevoUsuario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <!-- HEADER -->
+            <div class="modal-header">
+                <center>
+                    <h5 class="modal-title" id="exampleModalLabel"><b> Agregar nuevo Usuario </b> </h5>
+                </center>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <form id="form1" class="needs-validation" novalidate>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label>Rut</label>
+                                <input type="text" class="form-control" placeholder="ingrese rut" id="rut" onchange="checkRut(this)">
+                                <div class="invalid-feedback">
+                                    Ingrese Rut
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label>Nombre</label>
+                                <input type="text" class="form-control" placeholder="ingrese Nombre" id="nombre">
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label>Paterno</label>
+                                <input type="text" class="form-control" placeholder="ingrese paterno" id="paterno">
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label>Materno</label>
+                                <input type="text" class="form-control" placeholder="ingrese materno" id="materno">
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label>Correo</label>
+                                <input type="email" class="form-control" placeholder="ingrese correo" id="correo" onblur="validarEmail(value)">
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label>Teléfono</label>
+                                <input type="number" class="form-control" placeholder="ingrese teléfono" id="telefono" maxlength="9" onblur="validarTelefono(value)">
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label>Dirección</label>
+                                <input type="text" class="form-control" placeholder="ingrese dirección" id="direccion">
+                            </div>
+
+                            <div class="form-group col-md-6" id="divEstado">
+                                <label>Cargo</label>
+                                <select class="form-control selectpicker show-menu-arrow" id="cargo">
+                                    <!-- <option value="">Administrador</option>
+                                    <option value="">Tecnico</option> -->
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-6" id="divClave">
+                                <label>Clave</label>
+                                <input type="text" class="form-control" placeholder="ingrese clave" id="clave">
+                            </div>
+
+                            <!-- <div class="form-group col-md-6">
+                                <label>Usuario</label>
+                                <input type="text" class="form-control" placeholder="ingrese usuario" id="rut">
+                            </div> -->
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" id="btnAgregaUsuario" onclick="agregaUsuario()">Guardar</button>
+                <button type="button" class="btn btn-success" id="btnModificaUsuario" onclick="modificaUsuario()">Modificar</button>
+                <button type="button" class="btn btn-primary" id="btnModificaClave" onclick="modalClave()">Modificar clave</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalModificarClave" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+
+            <!-- HEADER -->
+            <div class="modal-header">
+                <center>
+                    <h5 class="modal-title" id="exampleModalLabel">Modificar Clave</h5>
+                </center>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label>Ingrese nueva clave</label>
+                            <input type="password" class="form-control" placeholder="ingrese clave" id="nuevaClave">
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label>repita nueva clave</label>
+                            <input type="password" class="form-control" placeholder="ingrese clave" id="nuevaClaveRepite">
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" id="btnAgregaUsuario" onclick="validarContraseña()">Modificar Clave</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- LIBRERIAS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer"
+/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+
+<link rel="stylesheet" href="js/sweetalert2/sweetalert2.min.css">
+<script src="js/sweetalert2/sweetalert2.all.min.js"></script>
+<script src="js/sweetalert2/sweetalert2.min.js"></script>
+<!-- documentacion sweet -->
+<!-- https://sweetalert2.github.io/#examples -->
+
+<script src="js/jsFuncionesGlobales.js"></script>
+
+
+
+<!-- VALIDACIONES Y TODO EN JAVASCRIPT Y JQUERY -->
+<script src="js/usuariosService.js"></script>

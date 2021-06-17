@@ -1,5 +1,5 @@
 //LOAD
-$(document).ready(function () {
+$(document).ready(function() {
 
     llenaCargos();
     // $('#llamarID').val();
@@ -15,14 +15,14 @@ function llenaCargos() {
     $('#alertNoData').hide();
     // $('#iconPreLoad').fadeIn();
     $.ajax({
-        url: 'https://predios.promasa.cl/traeCargo',
+        url: 'https://bodegaeqa.promasa.cl/listaCargos',
         type: "GET",
         dataType: "JSON",
         async: true,
-        success: function (data) {
+        success: function(data) {
 
             if (data == "") {
-                $('#tableInfoSeguimiento').empty();  // Limpia la tabla
+                $('#tableInfoSeguimiento').empty(); // Limpia la tabla
                 $(".cardDetalle").hide(); // Oculta el Card
                 // $('#iconPreLoad').hide(); // Oculta el icono
                 $('#alertNoData').fadeIn(); // Muestra alerta 'sin datos'
@@ -64,14 +64,14 @@ function llenaCargos() {
                 }
             }
         },
-        error: function () {
+        error: function() {
             // $('#iconPreLoad').hide();
             toastr.error('Ha ocurrido un error');
         }
     });
 }
 
-function accionBoton(){
+function accionBoton() {
 
     // $('#modalNuevoMaterial').modal('show');
 
@@ -88,20 +88,18 @@ function accionBoton(){
         confirmButtonColor: '#e74a3b',
         cancelButtonColor: '#e0dede',
         allowOutsideClick: false,
-    
-      }).then((result) => {
-    
+
+    }).then((result) => {
+
         if (result.isConfirmed) {
 
             // METODO A EJECUTAR ELIMINAR MODIFICAR 
 
             // ESTE CUANDO LA DATA ES OK DEL AJAX CUANDO DA EN ACEPTRAR
             alertSuccess('Solicitud rechazada', false); // MENSAJE, TRUE RECARGA - FALSE NADA
-
-
         }
-    
-      });
+
+    });
 
 
 }
