@@ -10,9 +10,8 @@
 
 <div class="container">
     <div class="row">
-
         <button class="btn btn-success" type="button" onclick="mostrarModalUsuario(1)"><i class="fas fa-plus"></i> Nuevo material</button>
-
+        <button class="btn btn-success" type="button" onclick="ModalInactivos()"><i class="fas fa-plus"></i> Usuarios Inactivos</button>
     </div>
 </div>
 
@@ -25,6 +24,7 @@
         </div>
     </div>
 </div>
+
 
 <div class="modal fade" id="modalNuevoUsuario" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-lg" role="document">
@@ -151,6 +151,39 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-success" id="btnAgregaUsuario" onclick="validarContraseña()">Modificar Clave</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalInactivos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+
+            <!-- HEADER -->
+            <div class="modal-header">
+                <center>
+                    <h5 class="modal-title" id="exampleModalLabel">Tabla Inactivos</h5>
+                </center>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- table inactivos -->
+                <div class="card shadow mb-4 cardInactivos hidden">
+                    <div class="card-body cardPadding">
+                        <div class="tableFixHead" id="tableInactivos">
+                            <!-- aqui va la tabla -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- FOOTER -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" id="btnAgregaUsuario">Modificar</button>
             </div>
 
         </div>

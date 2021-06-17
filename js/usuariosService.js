@@ -91,7 +91,6 @@ function validarTelefono(telefono) {
     }
 
 }
-
 //LISTAR USUARIOS
 
 function listarUsuarios() {
@@ -118,6 +117,91 @@ function listarUsuarios() {
                 // $('#iconPreLoad').hide(); // Oculta el icono
                 $(".cardDetalle").fadeIn(); // Muestra el Card
                 $('#tableUsuarios').empty(); // Limpia la tabla 
+
+                var height = (data.length > 6) ? '500px' : '100%';
+
+                $('#tableUsuarios').css('height', height);
+
+                $('#tableUsuarios').append( //Agregar las cabeceras a la tabla 
+
+                    `<table id="tableUsuarios" width="100%" class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="cabecera"> Rut </th> 
+                                        <th class="cabecera"> Nombre </th> 
+                                        <th class="cabecera"> Paterno </th> 
+                                        <th class="cabecera"> materno </th>
+                                        <th class="cabecera"> Correo </th>
+                                        <th class="cabecera"> Telefono </th>
+                                        <th class="cabecera"> Dirección </th>
+                                        <th class="cabecera"> Cargo </th>
+                                        <th class="cabecera"> usuario </th>
+                                        <th class="cabecera"> Acciones </th>                                       
+                                    </tr>
+                                </thead>
+
+                                <tbody> 
+                                <tbody>
+
+                            </table>`);
+
+
+                for (var i in data) {
+
+                    var nombreCargo = data[i].cargoId == 1 ? 'Administrador' : 'Técnico';
+
+                    var d = JSON.stringify(data);
+
+                    $("#tableUsuarios tr:last").after(`<tr>
+                                <td> <b>${data[i].rut}</b> </td>
+                                <td> ${data[i].nombre} </td>
+                                <td> ${data[i].paterno} </td>
+                                <td> ${data[i].materno} </td>
+                                <td> ${data[i].correo} </td>
+                                <td> ${data[i].telefono} </td>
+                                <td> ${data[i].direccion} </td> 
+                                <td> ${nombreCargo} </td>
+                                <td> ${data[i].usuario} </td>
+                                <td> 
+                                <button type="button" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Modificar" onClick="mostrarModalUsuario(2,'${data[i].rut}','${data[i].nombre}','${data[i].paterno}','${data[i].materno}','${data[i].correo}','${data[i].telefono}','${data[i].direccion}','${data[i].cargoId}','${data[i].estado}')"> <i class="fas fa-edit"></i> </button> 
+                                <button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Eliminar" onClick="eliminaUsuario('${data[i].rut}')"> <i class="fas fa-trash-alt"></i> </button>
+                                </td>
+                            </tr>`);
+                }
+            }
+        },
+        error: function() {
+            // $('#iconPreLoad').hide();
+            toastr.error('Ha ocurrido un error');
+        }
+    });
+
+}
+
+function listarUsuarioInactivos() {
+
+    $(".cardInactivos").hide();
+    $('#alertNoData').hide();
+    // $('#iconPreLoad').fadeIn();
+    $.ajax({
+        url: 'https://bodegaeqa.promasa.cl/listaUsuarios/2',
+        type: "GET",
+        dataType: "JSON",
+        async: true,
+        success: function(data) {
+
+            if (data == "") {
+                $('#tableInactivos').empty(); // Limpia la tabla
+                $(".cardInactivos").hide(); // Oculta el Card
+                // $('#iconPreLoad').hide(); // Oculta el icono
+                $('#alertNoData').fadeIn(); // Muestra alerta 'sin datos'
+
+            } else {
+
+                $('#alertNoData').hide(10); // Oculta alerta 
+                // $('#iconPreLoad').hide(); // Oculta el icono
+                $(".cardInactivos").fadeIn(); // Muestra el Card
+                $('#tableInactivos').empty(); // Limpia la tabla 
 
                 var height = (data.length > 6) ? '500px' : '100%';
 
@@ -201,7 +285,6 @@ function llenaCargos() {
 }
 
 //AGREGA USUARIOS
-
 function agregaUsuario() {
 
     // alert(fileExtension);
@@ -251,6 +334,11 @@ function modificaUsuario() {
     // alert(fileExtension);
     const correo = $('#correo').val();
     var user = correo.split('@')
+
+    if ($('#nombre').val() == "" || $('#paterno').val() == "" || $('#materno').val() == "" || $('#correo').val() == "" || $('#telefono').val() == "" || $('#direccion').val() == "" || $('#cargo').val() == "") {
+        toastr.error("debe ingresar datos")
+        return;
+    }
 
     $.ajax({
         url: 'https://bodegaeqa.promasa.cl/modificaUsuarioSma',
@@ -338,6 +426,95 @@ function mostrarModalUsuario(accion, rut, nombre, paterno, materno, correo, tele
     }
 }
 
+function ModalInactivos() {
+
+    $('#modalInactivos').modal("show");
+
+    $(".cardInactivos").hide();
+    $('#alertNoData').hide();
+    // $('#iconPreLoad').fadeIn();
+    $.ajax({
+        url: 'https://bodegaeqa.promasa.cl/listaUsuarios/2',
+        type: "GET",
+        dataType: "JSON",
+        async: true,
+        success: function(data) {
+
+            if (data == "") {
+                $('#tableInactivos').empty(); // Limpia la tabla
+                $(".cardInactivos").hide(); // Oculta el Card
+                // $('#iconPreLoad').hide(); // Oculta el icono
+                $('#alertNoData').fadeIn(); // Muestra alerta 'sin datos'
+
+            } else {
+
+                $('#alertNoData').hide(10); // Oculta alerta 
+                // $('#iconPreLoad').hide(); // Oculta el icono
+                $(".cardInactivos").fadeIn(); // Muestra el Card
+                $('#tableInactivos').empty(); // Limpia la tabla 
+
+                var height = (data.length > 6) ? '500px' : '100%';
+
+                $('#tableInactivos').css('height', height);
+
+                $('#tableInactivos').append( //Agregar las cabeceras a la tabla 
+
+                    `<table id="tableInactivos" width="100%" class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="cabecera"> Rut </th> 
+                                        <th class="cabecera"> Nombre </th> 
+                                        <th class="cabecera"> Paterno </th> 
+                                        <th class="cabecera"> materno </th>
+                                        <th class="cabecera"> Correo </th>
+                                        <th class="cabecera"> Telefono </th>
+                                        <th class="cabecera"> Dirección </th>
+                                        <th class="cabecera"> Cargo </th>
+                                        <th class="cabecera"> usuario </th>
+                                        <th class="cabecera"> Acciones </th>                                       
+                                    </tr>
+                                </thead>
+
+                                <tbody> 
+                                <tbody>
+
+                            </table>`);
+
+
+                for (var i in data) {
+
+                    var nombreCargo = data[i].cargoId == 1 ? 'Administrador' : 'Técnico';
+
+                    var d = JSON.stringify(data);
+
+                    $("#tableInactivos tr:last").after(`<tr>
+                                <td> <b>${data[i].rut}</b> </td>
+                                <td> ${data[i].nombre} </td>
+                                <td> ${data[i].paterno} </td>
+                                <td> ${data[i].materno} </td>
+                                <td> ${data[i].correo} </td>
+                                <td> ${data[i].telefono} </td>
+                                <td> ${data[i].direccion} </td> 
+                                <td> ${nombreCargo} </td>
+                                <td> ${data[i].usuario} </td>
+                                <td> 
+                                <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" id="customSwitch1">
+                            <label class="custom-control-label" for="customSwitch1">Toggle this switch element</label>
+                            </div>
+                                </td>
+                            </tr>`);
+                }
+            }
+        },
+        error: function() {
+            // $('#iconPreLoad').hide();
+            toastr.error('Ha ocurrido un error');
+        }
+    });
+
+}
+
 function modalClave() {
 
     $('#modalNuevoUsuario').modal("hide");
@@ -417,10 +594,13 @@ function validarContraseña() {
 
                 data: {
                     rut: $("#rut").val(),
-                    clave: $("#clave").val(),
+                    clave: $("#nuevaClave").val(),
                 },
                 success: function(data) {
                     if (data.length == 0) {
+
+                        console.log(data);
+
                         alertSuccess('Clave Modificada Correctamente', true);
                         $('#modalModificarClave').modal('hide');
                     } else {

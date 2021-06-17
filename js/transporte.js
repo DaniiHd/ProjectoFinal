@@ -1,5 +1,5 @@
 //LOAD
-$(document).ready(function () {
+$(document).ready(function() {
 
     listarTransporte();
     // $('#llamarID').val();
@@ -18,10 +18,10 @@ function listarTransporte() {
         type: "GET",
         dataType: "JSON",
         async: true,
-        success: function (data) {
+        success: function(data) {
 
             if (data == "") {
-                $('#tableTransporte').empty();  // Limpia la tabla
+                $('#tableTransporte').empty(); // Limpia la tabla
                 $(".cardDetalle").hide(); // Oculta el Card
                 // $('#iconPreLoad').hide(); // Oculta el icono
                 $('#alertNoData').fadeIn(); // Muestra alerta 'sin datos'
@@ -46,8 +46,7 @@ function listarTransporte() {
                                         <th width="20%" class="cabecera"> Tipo </th> 
                                         <th width="20%" class="cabecera"> Estado </th> 
                                         <th width="20%" class="cabecera"> Patente </th> 
-                                        <th width="10%" class="cabecera"> Modificar </th> 
-                                        <th width="10%" class="cabecera"> Eliminar </th> 
+                                        <th width="10%" class="cabecera"> Acciones </th> 
                                     </tr>
                                 </thead>
 
@@ -58,56 +57,66 @@ function listarTransporte() {
 
 
                 for (var i in data) {
+
+                    var estado = data[i].estado == 1 ? 'Disponible' : data[i].estado == 2 ? 'Inactivo' : 'Fuera de Servicio';
+
                     $("#tableDetalleTransporte tr:last").after(`<tr>
                                 <td> <b>${data[i].id}</b> </td>
                                 <td> ${data[i].tipo} </td>
-                                <td> ${data[i].estado} </td>
+                                <td> ${estado} </td>
                                 <td> ${data[i].patente} </td>
-                                <td> <button type="button" class="btn btn-primary" onClick="mostrarModalTransporte('${data[i].id}', '${data[i].tipo}','${data[i].estado}','${data[i].patente}' )" > Modificar </button> </td>
-                                <td> <button type="button" class="btn btn-danger"> eliminar </button> </td>
+                                <td>
+                                <button type="button" class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Modificar" onClick="mostrarModalTransporte(2,'${data[i].id}','${data[i].tipo}','${data[i].estado}','${data[i].patente}')"> <i class="fas fa-edit"></i> </button> 
+                                <button type="button" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Eliminar" onClick="eliminaTransporte('${data[i].id}')"> <i class="fas fa-trash-alt"></i> </button>
+                                </td>
+                               
                             </tr>`);
                 }
             }
         },
-        error: function () {
+        error: function() {
             // $('#iconPreLoad').hide();
             toastr.error('Ha ocurrido un error');
         }
     });
 
-    
+
 
 }
 
-
-function validarFormularioTransporte(){
+function validarFormularioTransporte() {
 
     if ($('#tipo').val() == '') return toastr.error('EL TIPO DE TRANSPORTE NO PUEDE SER VACIO');
     if ($('#patente').val() == '') return toastr.error('LA PLACA PATENTE NO PUEDE SER VACIO');
-    
+
     agregaTransporte();
 }
 
+function agregaTransporte() {
 
-function agregaTransporte(){
+    if ($('#tipo').val() == "" || $('#estado').val() == "" || $('#patente').val() == "") {
+        toastr.error("debe ingresar datos")
+        return;
+    }
+
     $.ajax({
         url: 'https://bodegaeqa.promasa.cl/agregaTransporte',
         type: "POST",
         dataType: "JSON",
 
-        data:{
+        data: {
 
-        'tipo':$('#tipo').val(),
-        'estado':$('#estado').val(),
-        'patente':$('#patente').val(),
+            'tipo': $('#tipo').val(),
+            'estado': $('#estado').val(),
+            'patente': $('#patente').val(),
         },
-        success: function(data){
+        success: function(data) {
 
-            if (data.length == 0){
-                alertSuccess('Transporte Ingresado correctamente', false);
+            if (data.length == 0) {
+                alertSuccess('Transporte Ingresado correctamente', true);
                 $('#modalNuevoTransporte').modal('hide');
 
-            }else{
+            } else {
 
                 toastr.error('No Pudo ser Ingresado el Vehiculo')
             }
@@ -117,28 +126,30 @@ function agregaTransporte(){
     });
 }
 
-function modificaTransporte(){
+function modificaTransporte() {
 
+    if ($('#tipo').val() == "" || $('#estado').val() == "" || $('#patente').val() == "") {
+        toastr.error("debe ingresar datos")
+        return;
+    }
 
     $.ajax({
-        url: 'https://bodegaeqa.promasa.cl/agregaTransporte',
+        url: 'https://bodegaeqa.promasa.cl/modificaTransporte',
         type: "POST",
         dataType: "JSON",
-
-        data:{
-
-        'tipo':$('#tipo').val(),
-        'estado':$('#estado').val(),
-        'patente':$('#patente').val(),
+        data: {
+            id: $('#id').val(),
+            tipo: $('#tipo').val(),
+            estado: $('#estado').val(),
+            patente: $('#patente').val(),
         },
-        success: function(data){
 
-            if (data.length == 0){
-                alertSuccess('Transporte Ingresado correctamente', false);
-                $('#modalNuevoMaterial').modal('hide');
+        success: function(data) {
+            if (data.length == 0) {
+                alertSuccess('Transporte Actualizado correctamente', true);
+                $('#modalNuevoTransporte').modal('hide');
 
-            }else{
-
+            } else {
                 toastr.error('No Pudo ser Ingresado el Vehiculo')
             }
 
@@ -147,27 +158,74 @@ function modificaTransporte(){
     });
 }
 
+function eliminaTransporte(id) {
 
-function eliminaTransporte(){
+    Swal.fire({
+        // title: 'Usted está rechazando la compra del material.',
+        text: '¿Está seguro que desea eliminar ?',
+        //inputPlaceholder: 'El comentario es requerido',
+        //input: 'textarea',
+        icon: 'question',
+        showCancelButton: true,
+        reverseButtons: true,
+        confirmButtonText: 'Si, Eliminar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#e74a3b',
+        cancelButtonColor: '#e0dede',
+        allowOutsideClick: false,
 
+    }).then((result) => {
 
+        if (result.isConfirmed) {
 
+            $.ajax({
+                url: 'https://bodegaeqa.promasa.cl/eliminaTransporte',
+                type: 'POST',
+                dataType: "JSON",
+                //async: false,
+
+                data: {
+                    'id': id,
+                },
+                success: function(data) {
+                    if (data.length == 0) {
+
+                        alertSuccess('Eliminado Correctamente', true); // MENSAJE, TRUE RECARGA - FALSE NADA
+                        listarUsuarios();
+                        $('#modalNuevoUsuario').modal('hide');
+                    } else {
+
+                        //AQUI SE DESACTIVARA EL USUARIO 
+                        toastr.error('Usuario no se puede eliminar');
+                    }
+                },
+                error: function() {
+
+                    toastr.error('Error al eliminar usuario');
+                }
+            });
+
+        }
+
+    });
 
 
 }
-
 
 function mostrarModalTransporte(accion, id, tipo, estado, patente) {
 
-    $('#btnModificaUsuario').hide();
+    $('#btnModificaTransporte').hide();
     $('#modalNuevoTransporte').modal("show");
 
     $('#id').val("");
     $('#tipo').val("");
     $('#estado').val("");
     $('#patente').val("");
-   
-    document.getElementById("rut").disabled = false;
+
+
+    document.getElementById("idDiv").style.display = 'none';
+    document.getElementById("divEstado").style.display = 'none';
+
     if (accion == 1) {
 
         $('#btnModificaTransporte').hide();
@@ -180,24 +238,18 @@ function mostrarModalTransporte(accion, id, tipo, estado, patente) {
     }
     if (accion == 2) {
 
-        $('#rut').val(rut),
-            $('#nombre').val(nombre),
-            $('#paterno').val(paterno),
-            $('#materno').val(materno),
-            $('#correo').val(correo),
-            $('#telefono').val(telefono),
-            $('#direccion').val(direccion),
-            $('#cargo').val(cargo),
+        $('#id').val(id),
+            $('#tipo').val(tipo),
+            $('#estado').val(estado),
+            $('#patente').val(patente),
 
-            
+            document.getElementById("divEstado").style.display = 'block';
+        document.getElementById("idDiv").style.display = 'block';
+        document.getElementById("id").disabled = true;
 
-        document.getElementById("rut").disabled = true;
+        $('#btnModificaTransporte').show();
 
-        $('#btnModificaUsuario').show();
-
-        $('#btnAgregaUsuario').hide();
-
-        $('#divClave').hide();
+        $('#btnAgregaTransporte').hide();
 
     }
 }
